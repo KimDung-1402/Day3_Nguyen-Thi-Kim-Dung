@@ -18,7 +18,7 @@ namespace Day3_Nguyễn_Thị_Kim_Dung.Controllers
         public ActionResult Details(int id)
         {
             var category = SeedClass.categories.FirstOrDefault(c => c.Id == id);
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
             }
@@ -36,7 +36,7 @@ namespace Day3_Nguyễn_Thị_Kim_Dung.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([FromForm] Models.Category category)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 int maxId = SeedClass.categories.Max(c => c.Id);
 
@@ -52,7 +52,7 @@ namespace Day3_Nguyễn_Thị_Kim_Dung.Controllers
         public ActionResult Edit([FromRoute] int id)
         {
             Category category = SeedClass.categories.FirstOrDefault(c => c.Id == id);
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
             }
@@ -65,7 +65,7 @@ namespace Day3_Nguyễn_Thị_Kim_Dung.Controllers
         public ActionResult Edit([FromForm] Category category)
         {
             var exitstiongCategory = SeedClass.categories.FirstOrDefault(c => c.Id == category.Id);
-            if(exitstiongCategory == null)
+            if (exitstiongCategory == null)
             {
                 return NotFound();
             }
@@ -81,16 +81,26 @@ namespace Day3_Nguyễn_Thị_Kim_Dung.Controllers
         // GET: CategoryController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var category = SeedClass.categories.FirstOrDefault(c => c.Id == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
         }
 
         // POST: CategoryController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult DeleteConfirmed([FromRoute] int id)
         {
             try
             {
+                var categorie = SeedClass.categories.FirstOrDefault(c => c.Id == id);
+                if (categorie != null)
+                {
+                    SeedClass.categories.Remove(categorie);
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
