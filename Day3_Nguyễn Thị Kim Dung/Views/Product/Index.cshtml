@@ -1,0 +1,124 @@
+@model IEnumerable<Day3_Nguyễn_Thị_Kim_Dung.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+
+    string currentSearch = ViewBag.CurrentSearch as string;
+    int? currentCategory = ViewBag.CurrentCategory as int?;
+    string sortField = ViewBag.SortField as string;
+    string sortDir = ViewBag.SortDir as string;
+
+    int currentPage = ViewBag.CurrentPage != null ? (int)ViewBag.CurrentPage : 1;
+    int totalPages = ViewBag.TotalPages != null ? (int)ViewBag.TotalPages : 0;
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form method="get" class="mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label text-muted small fw-bold mb-1">Tìm kiếm</label>
+            <input type="text" name="searchString" value="@currentSearch" class="form-control" placeholder="Nhập tên, mô tả..." onchange="this.form.submit()" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label text-muted small fw-bold mb-1">Lọc danh mục</label>
+            <select name="categoryId" asp-items="ViewBag.Categories" class="form-control" onchange="this.form.submit()">
+                <option value="">-- Tất cả --</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label text-muted small fw-bold mb-1">Sắp xếp theo</label>
+            <select name="sortField" class="form-control" onchange="this.form.submit()">
+                <option value="Name" selected="@(sortField == "Name")">Tên sản phẩm</option>
+                <option value="Price" selected="@(sortField == "Price")">Giá tiền</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label text-muted small fw-bold mb-1">Thứ tự</label>
+            <select name="sortDir" class="form-control" onchange="this.form.submit()">
+                <option value="asc" selected="@(sortDir == "asc")">Tăng dần (A-Z)</option>
+                <option value="desc" selected="@(sortDir == "desc")">Giảm dần (Z-A)</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">Tất cả</a>
+        </div>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.CategoryId)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Category!.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-end">
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(currentPage - 1)" asp-route-sortField="@sortField" asp-route-sortDir="@sortDir" asp-route-searchString="@currentSearch" asp-route-categoryId="@currentCategory">Trước</a>
+        </li>
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-sortField="@sortField" asp-route-sortDir="@sortDir" asp-route-searchString="@currentSearch" asp-route-categoryId="@currentCategory">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(currentPage == totalPages || totalPages == 0 ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(currentPage + 1)" asp-route-sortField="@sortField" asp-route-sortDir="@sortDir" asp-route-searchString="@currentSearch" asp-route-categoryId="@currentCategory">Sau</a>
+        </li>
+    </ul>
+</nav>

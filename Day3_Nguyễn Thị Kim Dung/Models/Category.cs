@@ -9,5 +9,6 @@ namespace Day3_Nguyễn_Thị_Kim_Dung.Models
         [StringLength(100, MinimumLength =3, ErrorMessage = "Name must be between 3 and 100 characters.")]
         public string Name { get; set; }
         public string Description { get; set; } = string.Empty;
+        public virtual List<Product>? Products { get; set; }
     }
 }

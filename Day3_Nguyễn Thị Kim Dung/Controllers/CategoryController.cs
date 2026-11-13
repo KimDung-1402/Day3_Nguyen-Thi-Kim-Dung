@@ -5,18 +5,38 @@ using Day3_Nguyễn_Thị_Kim_Dung.Models;
 
 namespace Day3_Nguyễn_Thị_Kim_Dung.Controllers
 {
+
     public class CategoryController : Controller
     {
-        // GET: CategoryController
-        public ActionResult Index()
+
+        private readonly ILogger<CategoryController> _logger;
+
+        public CategoryController(ILogger<CategoryController> logger)
         {
-            var _categories = SeedClass.categories;
-            return View(_categories);
+            _logger = logger;
+        }
+        // GET: CategoryController
+        public IActionResult Index(string searchString)
+        {
+            var categories = SeedClass.categories.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                categories = categories.Where(c =>
+                    c.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    (!string.IsNullOrEmpty(c.Description) && c.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                );
+            }
+
+            ViewBag.CurrentSearch = searchString;
+            return View(categories.ToList());
         }
 
         // GET: CategoryController/Details/5
         public ActionResult Details(int id)
         {
+            _logger.LogInformation("detail action called: {Id}", id);
+            _logger.LogError("This is a test: {Id}", id);
             var category = SeedClass.categories.FirstOrDefault(c => c.Id == id);
             if (category == null)
             {
